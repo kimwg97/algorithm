@@ -1,30 +1,13 @@
 package com.company;
 
-import java.util.Scanner;
-
 public class Main {
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        int[] list = new int[n];
+        // Main main = new Main();
+        //main.sort();                  메인에서 정렬을 사용할 때 쓰이는 코드입니다.
+    }
 
-        for(int h = 0 ; h < list.length; h++) list[h] = sc.nextInt();
-
-        int temp;
-        for(int i = 0; i < list.length; i++){
-            int min = list[i];
-            int minN = i;
-            for(int j = i+1; j < list.length; j++){
-                if(list[j] < min) {
-                    min = list[j];
-                    minN = j;
-                }
-            }
-            temp = list[i];
-            list[i] = list[minN];
-            list[minN] = temp;
-        }
-        for(int k = 0; k < list.length; k++) System.out.print(list[k] + " ");
+    public void sort() {
+        // 정렬 코드를 넣는 함수힙니다.
     }
 }
