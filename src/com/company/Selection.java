@@ -20,11 +20,13 @@ public class Selection {
                     minN = j;
                 }
             }
-            temp = list[i];
-            list[i] = list[minN];
-            list[minN] = temp;
+            swap(list, i, minN);
         }
         for(int k = 0; k < list.length; k++) System.out.print(list[k] + " ");
-
+    }
+    public void swap(int[] list, int i, int minN){
+        int temp = list[i];
+        list[i] = list[minN];
+        list[minN] = temp;
     }
 }
