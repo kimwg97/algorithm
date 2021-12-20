@@ -9,8 +9,6 @@ public class Selection {
         int[] list = new int[n];
 
         for(int h = 0 ; h < list.length; h++) list[h] = sc.nextInt();
-
-        int temp;
         for(int i = 0; i < list.length; i++){
             int min = list[i];
             int minN = i;

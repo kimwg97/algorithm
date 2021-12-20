@@ -9,7 +9,6 @@ public class Insertion {
         int[] list = new int[n];
 
         for(int  h = 0; h < n; h++) list[h] = sc.nextInt();
-        int temp;
         for(int i = 0; i < n - 1; i++) {
             for(int j = i; j >= 0; j--) if(list[j+1] < list[j]) swap(list, j);
         }
