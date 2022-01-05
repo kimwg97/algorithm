@@ -18,15 +18,16 @@ public class DFS {
         }
     }
 
-    public int dfs2(int[] arr, int n, int c, int sum){
-        if(count > c || sum == n-1){
-            if(count > c) count -= arr[sum-1];
+    public int dfs2(int[] arr, int n, int c, int l){
+        if(l == n){
+            if(count > c) return count;
             if(max < count) max = count;
+            System.out.println(count);
         }else{
-            count += arr[sum];
-            dfs2(arr, n, c, sum+1);
-            count -= arr[sum];
-            dfs2(arr, n, c, sum+1);
+            count += arr[l];
+            dfs2(arr, n, c,l+1);
+            count -= arr[l];
+            dfs2(arr, n, c, l+1);
         }
         return max;
     }
