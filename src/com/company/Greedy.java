@@ -101,7 +101,7 @@ public class Greedy {
     //-------------------------------------------Kruskal----------------------------------------------------------
 
 
-    public int Kruskal(ArrayList<kEdge> p, int v){
+    public int Kruskal(ArrayList<kEdge> p, int v){          // Union&Find 를 활용한다
         int sum = 0;
         for(kEdge i : p){
             int a = i.a;
@@ -136,6 +136,51 @@ public class Greedy {
         }
         Collections.sort(p);
         int sum = Kruskal(p, min);
+        System.out.println(sum);
+    }
+
+
+    //-------------------------------------------Prim-------------------------------------------------------------
+
+    public int Prim(int v){
+        int sum = 0;
+        PriorityQueue<Edge> q = new PriorityQueue<>();
+        q.offer(new Edge(v, 0));
+
+        while(!q.isEmpty()){
+            Edge now = q.poll();
+            int nowVex = now.vex;
+            int nowCost = now.cost;
+            if(arr[nowVex] == 0){
+                arr[nowVex] = 1;
+                sum += nowCost;
+                for( Edge od : graph.get(nowVex)){
+                    if(arr[od.vex] == 0) q.offer(new Edge(od.vex, od.cost));
+                }
+            }
+        }
+        return sum;
+    }
+
+    public void PrimInput(){
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+
+        arr = new int[n+1];
+
+        graph = new ArrayList<>();
+        for(int j = 0; j < m; j++) graph.add(new ArrayList<>());
+
+        for(int i = 0; i < m; i++){
+            int a = sc.nextInt();
+            int b = sc.nextInt();
+            int c = sc.nextInt();
+            graph.get(a).add(new Edge(b, c));
+            graph.get(b).add(new Edge(a, c));
+        }
+
+        int sum = Prim(1);
         System.out.println(sum);
     }
 
