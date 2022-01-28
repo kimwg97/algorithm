@@ -101,14 +101,14 @@ public class Greedy {
     //-------------------------------------------Kruskal----------------------------------------------------------
 
 
-    public int Kruskal(ArrayList<kEdge> p, int v){          // Union&Find 를 활용한다
+    public int Kruskal(ArrayList<kEdge> p){          // 간선 중심으로 최소 경로를 찾는 알고리즘
         int sum = 0;
-        for(kEdge i : p){
+        for(kEdge i : p){                                   // 그래프는 간선의 cost 값을 오름차순으로 하여 정렬되어 있음
             int a = i.a;
             int b = i.b;
-            if(Find(a) != Find(b)) {
-                Union(a, b);
-                sum += i.cost;
+            if(Find(a) != Find(b)) {                        // 간선의 노드끼리 Find 값이 다르다면 사이클이 아님을 의미
+                Union(a, b);                                // 해당 간선은 Union 하여 사이클을 방지하고
+                sum += i.cost;                              // 해당 간선의 cost 값은 사이클이 아닌 최소값이므로 더해준다
             }
         }
         return sum;
@@ -120,42 +120,38 @@ public class Greedy {
         int m = sc.nextInt();
 
         ArrayList<kEdge> p = new ArrayList<>();
-        for(int j = 0; j < n; j++) graph.add(new ArrayList<Edge>());            // 노드의 수 만큼 그래프에게 메모리 할당
 
         arr = new int[n+1];
         for(int j = 1; j <= n; j++) arr[j] = j;
-
-        int min = Integer.MAX_VALUE;
 
         for(int i = 0; i < m; i++){
             int a = sc.nextInt();
             int b = sc.nextInt();
             int c = sc.nextInt();
             p.add(new kEdge(a, b, c));                                          // a는 현재 노드, b는 이동 노드, c는 가중치
-            min = Math.min(min, c);
         }
-        Collections.sort(p);
-        int sum = Kruskal(p, min);
+        Collections.sort(p);                                                    // c값이 작은 것부터 나오도록 정렬
+        int sum = Kruskal(p);
         System.out.println(sum);
     }
 
 
     //-------------------------------------------Prim-------------------------------------------------------------
 
-    public int Prim(int v){
+    public int Prim(int v){                                         // 크루스칼과는 다르게 노드 중심으로 최소 경로를 찾는다
         int sum = 0;
         PriorityQueue<Edge> q = new PriorityQueue<>();
         q.offer(new Edge(v, 0));
 
-        while(!q.isEmpty()){
+        while(!q.isEmpty()){                                        // 다익스트라와 비슷한 방법을 이용
             Edge now = q.poll();
             int nowVex = now.vex;
             int nowCost = now.cost;
-            if(arr[nowVex] == 0){
-                arr[nowVex] = 1;
+            if(arr[nowVex] == 0){                                   // 해당 배열을 지나갔다면 1, 아니라면 0을 의미
+                arr[nowVex] = 1;                                    // 해당 노드를 지나가면 인덱스 값을 1로 바꿔준다
                 sum += nowCost;
                 for( Edge od : graph.get(nowVex)){
-                    if(arr[od.vex] == 0) q.offer(new Edge(od.vex, od.cost));
+                    if(arr[od.vex] == 0) q.offer(new Edge(od.vex, od.cost));        // 다음으로 찾을 노드 값이 0, 즉 지나가지 않았다면 큐에 넣어서 확인한다
                 }
             }
         }
@@ -167,17 +163,17 @@ public class Greedy {
         int n = sc.nextInt();
         int m = sc.nextInt();
 
-        arr = new int[n+1];
+        arr = new int[n+1];                                                     // 해당 노드를 지나갔는지 확인하기 위한 배열, 프림이 노드 중심으로 돌아가게 해줌
 
         graph = new ArrayList<>();
-        for(int j = 0; j < m; j++) graph.add(new ArrayList<>());
+        for(int j = 0; j < m; j++) graph.add(new ArrayList<>());                // 다익스트라와 같은 방법으로 그래프를 만들어준다
 
         for(int i = 0; i < m; i++){
             int a = sc.nextInt();
             int b = sc.nextInt();
             int c = sc.nextInt();
             graph.get(a).add(new Edge(b, c));
-            graph.get(b).add(new Edge(a, c));
+            graph.get(b).add(new Edge(a, c));                                   // 다익스트라와는 다르게 양방향으로 움직일 수 있으므로 두가지 경우를 add 해준다
         }
 
         int sum = Prim(1);
