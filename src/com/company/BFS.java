@@ -4,8 +4,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
-public class BFS {
-    public int BFS(){
+public class BFS {  // 최소 경로 구하기
+    public int bfs1(){
         Scanner sc = new Scanner(System.in);
         int s = sc.nextInt();
         int e = sc.nextInt();
