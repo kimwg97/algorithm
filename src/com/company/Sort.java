@@ -4,6 +4,33 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Sort {
+
+    public void Quick(int[] arr){
+        QuickSort(arr, 0, arr.length-1);
+    }
+
+    public void QuickSort(int[] arr, int lo, int hi){
+        if(lo >= hi) return;
+        int pivot = Partition(arr, lo, hi);
+        QuickSort(arr, lo, pivot-1);
+        QuickSort(arr, pivot+1, hi);
+    }
+
+    public int Partition(int[] arr, int left, int right){
+        int lo = left;
+        int hi = right;
+        int pivot = arr[left];
+
+        while(lo < hi){
+            while(pivot < arr[hi] && lo < hi) hi--;
+            while(pivot >= arr[lo] && lo < hi) lo++;
+            selectionSwap(arr, hi, lo);
+        }
+
+        selectionSwap(arr, left, lo);
+        return lo;
+    }
+
     public void Bubble(){
         Scanner sc = new Scanner(System.in);
         int n = sc.nextInt();
