@@ -8,26 +8,55 @@ public class Sort {
     public void Quick(int[] arr){
         QuickSort(arr, 0, arr.length-1);
     }
-
-    public void QuickSort(int[] arr, int lo, int hi){
+    // 맨 왼쪽을 pivot 으로 설정한 QuickSort
+    public void QuickSort(int[] arr, int lo, int hi){           // 배열의 pivot 을 Partition 함수로 결정하고 lo >= hi, 즉 배열의 크기가 1일 때까지 재귀를 돌려준다
         if(lo >= hi) return;
-        int pivot = Partition(arr, lo, hi);
-        QuickSort(arr, lo, pivot-1);
-        QuickSort(arr, pivot+1, hi);
+        int pivot = PartitionMid(arr, lo, hi);
+        QuickSort(arr, lo, pivot-1);                        
+        QuickSort(arr, pivot, hi);                              // pivot 값을 중간으로 둘 경우 partition 한 값에 pivot 까지 포함해야한다. 아니라면 +1 을하여 pivot 값은 제외한다
     }
 
-    public int Partition(int[] arr, int left, int right){
+    public int PartitionLeft(int[] arr, int left, int right){       // pivot(가장 왼쪽 원소)를 기준으로 받아온 배열의 원소를 큰 수는 오른 쪽, 작은 수는 왼쪽으로 바꿔준다
         int lo = left;
         int hi = right;
         int pivot = arr[left];
 
-        while(lo < hi){
-            while(pivot < arr[hi] && lo < hi) hi--;
-            while(pivot >= arr[lo] && lo < hi) lo++;
-            selectionSwap(arr, hi, lo);
+        while(lo < hi){                                         // lo와 hi가 교차할 때까지 진행
+            while(pivot < arr[hi] && lo < hi) hi--;             // 오른쪽 원소가 pivot 보다 크다면 다음 원소로 넘어간다
+            while(pivot >= arr[lo] && lo < hi) lo++;            // 왼쪽 원소가  pivot 보다 작거나 같다면 다음 원소로 넘어간다
+            swap(arr, hi, lo);                         // 위 조건에 걸리지 않으면, 즉 오른쪽에서 pivot 보다 작고 왼쪽에서 pivot 보다 큰 hi와 lo를 swap 한다
         }
 
-        selectionSwap(arr, left, lo);
+        swap(arr, left, lo);
+        return lo;
+    }
+
+    public int PartitionRight(int[] arr, int left, int right){
+        int lo = left;
+        int hi = right;
+        int pivot = arr[right];
+
+        while(lo < hi){
+            while (arr[hi] >= pivot && lo < hi) hi--;
+            while (arr[lo] < pivot && lo < hi) lo++;
+            swap(arr, hi, lo);
+        }
+
+        swap(arr, right, hi);
+        return hi;
+    }
+
+    public int PartitionMid(int[] arr, int lo, int hi){
+        int pivot = arr[(lo + hi) / 2];
+        while (lo <= hi) {
+            while (arr[lo] < pivot) lo++;
+            while (arr[hi] > pivot) hi--;
+            if (lo <= hi) {
+                swap(arr, lo, hi);
+                lo++;
+                hi--;
+            }
+        }
         return lo;
     }
 
@@ -37,8 +66,8 @@ public class Sort {
         int[] list = new int[n];
 
         for(int h = 0; h < n; h++) list[h] = sc.nextInt();
-        for(int i = 0; i < n - 1; i++){
-            for(int j = 0; j < n - 1; j++) if(list[j] > list[j + 1]) swap(list, j);
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n - 1; j++) if(list[j] > list[j + 1]) swap(list, j, j+1);
         }
         for(int k = 0; k < n; k++) System.out.print(list[k] + " ");
     }
@@ -50,7 +79,7 @@ public class Sort {
 
         for(int  h = 0; h < n; h++) list[h] = sc.nextInt();
         for(int i = 0; i < n - 1; i++) {
-            for(int j = i; j >= 0; j--) if(list[j+1] < list[j]) swap(list, j);
+            for(int j = i; j >= 0; j--) if(list[j+1] < list[j]) swap(list, j, j+1);
         }
         for(int k = 0; k < n; k++) System.out.print(list[k] + " ");
     }
@@ -70,7 +99,7 @@ public class Sort {
                     minN = j;
                 }
             }
-            selectionSwap(list, i, minN);
+            swap(list, i, minN);
         }
         for(int k = 0; k < list.length; k++) System.out.print(list[k] + " ");
     }
@@ -96,15 +125,9 @@ public class Sort {
         for(int j = 0; j < s; j++) System.out.print(cache.get(j) + " ");
     }
 
-    public void selectionSwap(int[] list, int i, int minN){
+    public void swap(int[] list, int i, int j){
         int temp = list[i];
-        list[i] = list[minN];
-        list[minN] = temp;
-    }
-
-    public void swap(int[] list, int j){
-        int temp = list[j+1];
-        list[j+1] = list[j];
+        list[i] = list[j];
         list[j] = temp;
     }
 }
