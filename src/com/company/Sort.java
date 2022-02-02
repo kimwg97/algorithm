@@ -49,8 +49,8 @@ public class Sort {
     public int PartitionMid(int[] arr, int lo, int hi){
         int pivot = arr[(lo + hi) / 2];
         while (lo <= hi) {
-            while (arr[lo] < pivot) lo++;
             while (arr[hi] > pivot) hi--;
+            while (arr[lo] < pivot) lo++;
             if (lo <= hi) {
                 swap(arr, lo, hi);
                 lo++;
@@ -58,6 +58,46 @@ public class Sort {
             }
         }
         return lo;
+    }
+
+    public void Merge(){
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        int[] res = new int[n];
+        for(int i = 0; i < n; i++) arr[i] = sc.nextInt();
+
+        Divide(arr, res, 0, n-1);
+        for(int i = 0; i < n; i++) System.out.print(arr[i] + " ");
+    }
+
+    public void Divide(int[] arr, int[] res, int start, int end){
+        if(start < end){
+            int mid = (start + end) / 2;
+
+            Divide(arr, res, start, mid);
+            Divide(arr, res, mid+1, end);
+
+            Combine(arr, res, start, end, mid);
+        }
+    }
+
+    public void Combine(int[] arr, int[] res, int start, int end, int mid){
+        int i = start;
+        int j = mid+1;
+        int k = start;
+
+        while (i <= mid && j <= end){
+            if(arr[i] < arr[j]) res[k++] = arr[i++];
+            else res[k++] = arr[j++];
+        }
+        if(j > end){
+            for(int h = i; h <= mid; h++) res[k++] = arr[h];
+        } else{
+            for(int h = j; h <= end; h++) res[k++] = arr[h];
+        }
+        for(int h = start; h <= end; h++) arr[h] = res[h];
+
     }
 
     public void Bubble(){
