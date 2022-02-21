@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 public class N9019 {
     int[][] testCase;
+    boolean[] check;
     int t;
 
     public class TCase{
@@ -16,6 +17,22 @@ public class N9019 {
         public TCase(int num, String calculate){
             this.num = num;
             this.calculate = calculate;
+        }
+
+        int D() {
+            return (num * 2) % 10000;
+        }
+
+        int S() {
+            return num == 0 ? 9999 : num - 1;
+        }
+
+        int L() {
+            return num % 1000 * 10 + num / 1000;
+        }
+
+        int R() {
+            return num % 10 * 1000 + num / 10;
         }
     }
 
@@ -37,6 +54,7 @@ public class N9019 {
     public void BFS(int start, int result){
         Queue<TCase> q = new LinkedList<>();
         q.offer(new TCase(start, ""));
+        check = new boolean[10000];
 
         Loop1 :
         while(!q.isEmpty()){
@@ -44,65 +62,36 @@ public class N9019 {
             for(int i = 0; i < len; i++){
                 TCase n = q.poll();
 
-                int d = D(n.num);
-                q.offer(new TCase(d, n.calculate+"D"));
-                if(d == result) {
-                    System.out.println(n.calculate + "D");
-                    break Loop1;
+                if(n.num == result) System.out.println(n.calculate);
+
+                int d = n.D();
+                if(!check[d]) {
+                    check[d] = true;
+                    q.offer(new TCase(d, n.calculate+"D"));
                 }
 
-                int s = S(n.num);
-                q.offer(new TCase(s, n.calculate+"S"));
-                if(s == result) {
-                    System.out.println(n.calculate + "S");
-                    break Loop1;
+                int s = n.S();
+                if(!check[s]) {
+                    check[s] = true;
+                    q.offer(new TCase(s, n.calculate + "S"));
                 }
 
-                int l = L(n.num);
-                q.offer(new TCase(l, n.calculate+"L"));
-                if(l == result) {
-                    System.out.println(n.calculate +"L");
-                    break Loop1;
+                int l = n.L();
+                if(!check[l]) {
+                    check[l] = true;
+                    q.offer(new TCase(l, n.calculate + "L"));
                 }
 
-                int r = R(n.num);
-                q.offer(new TCase(r, n.calculate+"R"));
-                if(r == result) {
-                    System.out.println(n.calculate + "R");
-                    break Loop1;
+                int r = n.R();
+                if(!check[r]) {
+                    check[r] = true;
+                    q.offer(new TCase(r, n.calculate + "R"));
                 }
+
             }
         }
     }
 
-    public int D(int n){
-        int result = n * 2;
-        if(result > 9999) result = result % 10000;
 
-        return result;
-    }
-
-    public int S(int n){
-        int result = n - 1;
-        if(result == 0) result = 9999;
-
-        return result;
-    }
-
-    public int L(int n){
-        int result = 0;
-
-        result += n / 1000;
-        result += (n % 1000) * 10;
-        return result;
-    }
-
-    public int R(int n){
-        int result = 0;
-
-        result += (n % 10) * 1000;
-        result += n / 10;
-        return result;
-    }
 
 }
