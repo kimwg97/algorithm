@@ -51,6 +51,10 @@ public class N9019 {
         }
     }
 
+    // BFS 사용할 때 주의할 점은 메모리 오버플로우가 나지 않게 조절하는 것이다.
+    // 여기서 사용하는 boolean 배열은 오버플로우를 방지하기 위한 장치인데, 각 인덱스는 계산 결과 값을 의미하고
+    // 인덱스 값이 true 라면 이미 나온 결과 값이므로 또 큐에 넣지 말라는 역할을 수행한다.
+    // 즉, 큐에 넣을 필요가 없는 값을 따로 걸러내어 메모리 오버플로우를 방지한다.
     public void BFS(int start, int result){
         Queue<TCase> q = new LinkedList<>();
         q.offer(new TCase(start, ""));
