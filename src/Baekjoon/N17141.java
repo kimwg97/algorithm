@@ -1,16 +1,17 @@
 package Baekjoon;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
 
 public class N17141 {
     int n, m;
     int[][] map;
     int[][] brick;
-    int count = 0;
-    int max = Integer.MIN_VALUE;
-
-    int[] dx = {1, 0, -1, 0};
-    int[] dy = {0, -1, 0, 1};
+    int[][] copied;
+    ArrayList<Point> start = new ArrayList<>();
 
     public void N17141(){
         Scanner sc = new Scanner(System.in);
@@ -18,33 +19,31 @@ public class N17141 {
         m = sc.nextInt();
         map = new int[n][n];
         brick = new int[n][n];
+        copied = new int[n][n];
 
         for(int i = 0; i < n; i++){
-            for(int j = 0; j < m; j++){
+            for(int j = 0; j < n; j++){
                 map[i][j] = sc.nextInt();
                 if(map[i][j] == 1) brick[i][j] = 1;
+                else if(map[i][j] == 2) start.add(new Point(i, j));
             }
         }
 
+        DFS(0, 0);
+    }
+
+    // DFS 에서 보내준 조합을 시작점으로 바이러스가 퍼진다
+    public void BFS(){
 
     }
 
-    public void virus(){
+    // 입력에서 받은 시작 후보들을 조합해서 BFS 에 넘긴다
+    public void DFS(int l, int c){
+        if(true){
 
-    }
-
-    public void DFS(int l){
-        if(l == m){
-            virus();
         }else{
-            for(int i = 0; i < n; i++){
-                for(int j = 0; j < m; j++){
-                    if(map[i][j] == 2){
-                        map[i][j] = 3;              // 바이러스 자리로 취급
-                        DFS(l+1);
-                        map[i][j] = 2;              // 다시 바이러스 자리 후보로
-                    }
-                }
+            for(int i = c; i < m; i++){
+
             }
         }
     }
