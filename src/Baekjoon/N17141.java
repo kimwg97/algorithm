@@ -11,7 +11,13 @@ public class N17141 {
     int[][] map;
     int[][] brick;
     int[][] copied;
+    int[] virus;
     ArrayList<Point> start = new ArrayList<>();
+
+    int min = Integer.MAX_VALUE;
+
+    int[] dx = {1, 0, -1, 0};
+    int[] dy = {0, -1, 0, 1};
 
     public void N17141(){
         Scanner sc = new Scanner(System.in);
@@ -20,6 +26,7 @@ public class N17141 {
         map = new int[n][n];
         brick = new int[n][n];
         copied = new int[n][n];
+        virus = new int[m];
 
         for(int i = 0; i < n; i++){
             for(int j = 0; j < n; j++){
@@ -30,21 +37,72 @@ public class N17141 {
         }
 
         DFS(0, 0);
+        if(min == Integer.MAX_VALUE) System.out.println(-1);
+        else if(min == 0) System.out.println(0);
+        else System.out.println(min-2);
     }
 
     // DFS 에서 보내준 조합을 시작점으로 바이러스가 퍼진다
     public void BFS(){
+        Queue<Point> q = new LinkedList<>();
+        int count = 0;
 
+        mapCopy();
+        for(int i = 0; i < m; i++){
+            int x = start.get(virus[i]).x;
+            int y = start.get(virus[i]).y;
+            copied[x][y] = 2;
+            q.add(new Point(x, y));
+        }
+
+        while(!q.isEmpty()){
+            Point temp = q.poll();
+
+            for(int i = 0; i < 4; i++){
+                int nx = dx[i] + temp.x;
+                int ny = dy[i] + temp.y;
+                if(nx >= 0 && ny >= 0 && ny < n && nx < n && copied[nx][ny] == 0){
+                    int c = copied[temp.x][temp.y] + 1;
+                    copied[nx][ny] = c;
+                    count = Math.max(count, c);
+                    if(count > min) return;
+                    q.add(new Point(nx, ny));
+                }
+            }
+        }
+        if(Check()) min = Math.min(count, min);
     }
 
     // 입력에서 받은 시작 후보들을 조합해서 BFS 에 넘긴다
     public void DFS(int l, int c){
-        if(true){
-
+        if(l == m){
+            BFS();
         }else{
-            for(int i = c; i < m; i++){
-
+            for(int i = c; i < start.size(); i++){
+                virus[l] = i;
+                DFS(l+1, i+1);
             }
         }
+    }
+
+    // 벽돌만 있는 맵을 복사
+    public void mapCopy(){
+        copied = new int[n][n];
+
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                copied[i][j] = brick[i][j];
+            }
+        }
+    }
+
+    // 해당 맵에 안전 지역이 있는지 확인
+    public boolean Check(){
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                if(copied[i][j] == 0) return false;
+            }
+        }
+        return true;
     }
 }
