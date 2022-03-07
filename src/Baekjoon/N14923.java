@@ -6,12 +6,22 @@ import java.util.Queue;
 import java.util.Scanner;
 
 public class N14923 {
+
+    public class P{
+        int x;
+        int y;
+        int count;
+        public P(int x, int y, int count){
+            this.x = x;
+            this.y = y;
+            this.count = count;
+        }
+    }
+
     int n, m;
-    Point s, e;
+    P s, e;
     int[][] map;
-    int[][] copied;
-    int[][] check;
-    int min = Integer.MAX_VALUE;
+    int[][][] check;
 
     int[] dx = {0, 1, 0, -1};
     int[] dy = {1, 0, -1, 0};
@@ -21,9 +31,9 @@ public class N14923 {
         n = sc.nextInt();
         m = sc.nextInt();
         map = new int[n][m];
-        copied = new int[n][m];
-        s = new Point(sc.nextInt()-1, sc.nextInt()-1);
-        e = new Point(sc.nextInt()-1, sc.nextInt()-1);
+        check = new int[n][m][2];
+        s = new P(sc.nextInt()-1, sc.nextInt()-1, 0);
+        e = new P(sc.nextInt()-1, sc.nextInt()-1, 0);
 
         for(int i = 0; i < n; i++){
             for(int j = 0; j < m; j++){
@@ -31,54 +41,40 @@ public class N14923 {
             }
         }
 
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < m; j++){
-                if(map[i][j] == 1){
-                    map[i][j] = 0;
-                    BFS();
-                    map[i][j] = 1;
-                }
-            }
-        }
-
-        if(min != Integer.MAX_VALUE) System.out.println(min);
-        else System.out.println(-1);
-
+        int result = BFS();
+        System.out.println(result);
     }
 
-    public void CopyMap(){
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < m; j++) copied[i][j] = map[i][j];
-        }
-    }
-
-    public void BFS(){
-        Queue<Point> q = new LinkedList<>();
+    public int BFS(){
+        Queue<P> q = new LinkedList<>();
         q.add(s);
-        check = new int[n][m];
-
-        CopyMap();
+        map[s.x][s.y] = 2;
 
         while (!q.isEmpty()){
-            Point temp = q.poll();
+            P temp = q.poll();
 
-            if(check[temp.x][temp.y] > min) return;
-            if(temp.x == e.x && temp.y == e.y) {
-                min = check[e.x][e.y];
-                return;
-            }
+            if(temp.x == e.x && temp.y == e.y) return check[temp.x][temp.y][0];
 
             for(int i = 0; i < 4; i++){
                 int nx = dx[i] + temp.x;
                 int ny = dy[i] + temp.y;
-                if(nx >= 0 && nx < n && ny >= 0 && ny < m && copied[nx][ny] == 0){
-                    copied[nx][ny] = 1;
-                    check[nx][ny] = check[temp.x][temp.y] + 1;
-                    q.add(new Point(nx, ny));
+                if(nx >= 0 && nx < n && ny >= 0 && ny < m){
+                    if(map[nx][ny] == 0) {
+                        check[nx][ny][0] = check[temp.x][temp.y][0] + 1;
+                        q.add(new P(nx, ny, temp.count));
+                    }
+                    else if(map[nx][ny] == 1){
+                        if(temp.count == 0 && check[nx][ny][1] == 0){
+                            check[nx][ny][1] = 1;
+                            check[nx][ny][0] = check[temp.x][temp.y][0] + 1;
+                            q.add(new P(nx, ny, temp.count+1));
+                        }
+                    }
                 }
-
             }
         }
+
+        return -1;
     }
 
 
