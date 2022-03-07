@@ -59,9 +59,19 @@ public class N14923 {
                 int nx = dx[i] + temp.x;
                 int ny = dy[i] + temp.y;
                 if(nx >= 0 && nx < n && ny >= 0 && ny < m){
-                    if(map[nx][ny] == 0) {
-                        check[nx][ny][0] = check[temp.x][temp.y][0] + 1;
-                        q.add(new P(nx, ny, temp.count));
+                    if(map[nx][ny] == 0 || map[nx][ny] == 3) {
+                        if(map[nx][ny] == 0) {
+                            if (temp.count == 0) map[nx][ny] = 2;
+                            else map[nx][ny] = 3;
+                            check[nx][ny][0] = check[temp.x][temp.y][0] + 1;
+                            q.add(new P(nx, ny, temp.count));
+                        }else{
+                            if(temp.count == 0){
+                                map[nx][ny] = 2;
+                                check[nx][ny][0] = check[temp.x][temp.y][0] + 1;
+                                q.add(new P(nx, ny, temp.count));
+                            }
+                        }
                     }
                     else if(map[nx][ny] == 1){
                         if(temp.count == 0 && check[nx][ny][1] == 0){
