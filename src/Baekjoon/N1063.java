@@ -1,128 +1,140 @@
 package Baekjoon;
 
+import java.awt.*;
 import java.util.Scanner;
 
 public class N1063 {
-    char kx, sx;
-    int ky, sy;
-    int n;
+
+    Point king, stone;
     String[] command;
-    int[][] map = new int[8][8];
+    String[] com = {"R","L","B","T","RT","LT","RB","LB"};
 
     public void N1063(){
         Scanner sc = new Scanner(System.in);
         String str = sc.next();
-        kx = str.charAt(0);
-        ky = Character.getNumericValue(str.charAt(1));
+
+        char ky = str.charAt(0);
+        int kx = Character.getNumericValue(str.charAt(1));
+
         str = sc.next();
-        sx = str.charAt(0);
-        sy = Character.getNumericValue(str.charAt(1));
-        n = sc.nextInt();
+        char sy = str.charAt(0);
+        int sx = Character.getNumericValue(str.charAt(1));
+
+        int n = sc.nextInt();
         command = new String[n];
+
+        king = new Point(kx, ky-65);
+        stone = new Point(sx, sy-65);
 
         for(int i = 0; i < n; i++){
             command[i] = sc.next();
         }
 
-        int s = sy;
-        int k = ky;
+//        for(int i = 0; i < n; i++) System.out.println(com[4].equals(command[i]));
 
-        int k2 = kx-65;
-        int s2 = sx-65;
-
-        // k2 좌우  k 상하
         for(int i = 0; i < n; i++){
             int nx = 9, ny = 9;
-            if(command[i] == "R"){
-                ny = k2+1;
-                if(ny >= 8) continue;
-                if(nx == s && ny == s2){
-                    if(s2 + 1 >= 8) continue;
-                    else s2++;
+
+            if(com[0].equals(command[i])) {
+                ny = king.y + 1;
+                if (ny >= 8) continue;
+                if (king.x == stone.x && ny == stone.y) {
+                    if (stone.y + 1 >= 8) continue;
+                    else stone.y = ny + 1;
                 }
+                if (nx != 9) king.x = nx;
+                if (ny != 9) king.y = ny;
             }
-            else if(command[i] == "L"){
-                ny = k2-1;
-                if(ny < 0) continue;
-                if(nx == s && ny == s2){
-                    if(s2 - 1 < 0) continue;
-                    else s2--;
+
+            else if(com[1].equals(command[i])) {
+                ny = king.y - 1;
+                if (ny < 0) continue;
+                if (king.x == stone.x && ny == stone.y) {
+                    if (stone.y - 1 < 0) continue;
+                    else stone.y = ny - 1;
                 }
+                if (nx != 9) king.x = nx;
+                if (ny != 9) king.y = ny;
             }
-            else if(command[i] == "B"){
-                nx = k+1;
-                if(nx >= 8) continue;
-                if(nx == s && ny == s2){
-                    if(s + 1 >= 8) continue;
-                    else s++;
+            else if(com[2].equals(command[i])) {
+                nx = king.x - 1;
+                if (nx < 1) continue;
+                if (nx == stone.x && king.y == stone.y) {
+                    if (stone.x - 1 < 1) continue;
+                    else stone.x = nx - 1;
                 }
+                if (nx != 9) king.x = nx;
+                if (ny != 9) king.y = ny;
             }
-            else if(command[i] == "T"){
-                nx = k-1;
-                if(nx < 0) continue;
-                if(nx == s && ny == s2){
-                    if(sx - 1 < 0) continue;
-                    else s--;
+            else if(com[3].equals(command[i])) {
+                nx = king.x + 1;
+                if (nx >= 9) continue;
+                if (nx == stone.x && king.y == stone.y) {
+                    if (stone.x + 1 >= 9) continue;
+                    else stone.x = nx + 1;
                 }
+                if (nx != 9) king.x = nx;
+                if (ny != 9) king.y = ny;
             }
-            else if(command[i] == "RT"){
-                nx = k-1;
-                ny = k2+1;
-                if(nx< 0 || ny >= 8) continue;
-                if(nx == s && ny == s2){
-                    if(s2 + 1 >= 8 || s - 1 < 0) continue;
-                    else{
-                        s2++;
-                        s--;
+            else if(com[4].equals(command[i])) {
+                nx = king.x + 1;
+                ny = king.y + 1;
+                if (nx >= 9 || ny >= 8) continue;
+                if (nx == stone.x && ny == stone.y) {
+                    if (stone.x + 1 >= 9 || stone.y + 1 >= 8) continue;
+                    else {
+                        stone.x = nx + 1;
+                        stone.y = ny + 1;
                     }
                 }
-            }else if(command[i] == "LT"){
-                nx = k-1;
-                ny = k2-1;
-                if(ny < 0 || nx < 0) continue;
-                if(nx == s && ny == s2){
-                    if(s2 - 1 < 0 || s - 1 < 0) continue;
-                    else{
-                        s2--;
-                        s--;
+                if (nx != 9) king.x = nx;
+                if (ny != 9) king.y = ny;
+            }
+            else if(com[5].equals(command[i])) {
+                nx = king.x + 1;
+                ny = king.y - 1;
+                if (nx >= 9 || ny < 0) continue;
+                if (nx == stone.x && ny == stone.y) {
+                    if (stone.x + 1 >= 9 || stone.y - 1 < 0) continue;
+                    else {
+                        stone.x = nx + 1;
+                        stone.y = ny - 1;
                     }
                 }
+                if (nx != 9) king.x = nx;
+                if (ny != 9) king.y = ny;
             }
-            else if(command[i] == "RB"){
-                nx = k+1;
-                ny = k2+1;
-                if(ny >= 8 || nx >= 8) continue;
-                if(nx == s && ny == s2){
-                    if(s2 + 1 >= 8 || s + 1 >= 8) continue;
-                    else{
-                        s2++;
-                        s++;
+            else if(com[6].equals(command[i])) {
+                nx = king.x - 1;
+                ny = king.y + 1;
+                if (nx < 1 || ny >= 8) continue;
+                if (nx == stone.x && ny == stone.y) {
+                    if (stone.x - 1 < 1 || stone.y + 1 >= 8) continue;
+                    else {
+                        stone.x = nx - 1;
+                        stone.y = ny + 1;
                     }
                 }
+                if (nx != 9) king.x = nx;
+                if (ny != 9) king.y = ny;
             }
-            else if(command[i] == "LB"){
-                nx = k+1;
-                ny = k2-1;
-                if(ny < 0 || nx >= 8) continue;
-                if(nx == s && ny == s2){
-                    if(s2 - 1 < 0 || s + 1 >= 8) continue;
-                    else{
-                        s2--;
-                        s++;
+            else if(com[7].equals(command[i])) {
+                nx = king.x - 1;
+                ny = king.y - 1;
+                if (nx < 1 || ny < 0) continue;
+                if (nx == stone.x && ny == stone.y) {
+                    if (stone.x - 1 < 1 || stone.y - 1 < 0) continue;
+                    else {
+                        stone.x = nx - 1;
+                        stone.y = ny - 1;
                     }
                 }
-            }
-            if(nx != 9 && ny != 9){
-                k = nx;
-                k2 = ny;
+                if (nx != 9) king.x = nx;
+                if (ny != 9) king.y = ny;
             }
         }
 
-        System.out.println((char)(k2+65) + "" + k);
-        System.out.println((char)(s2+65) + "" + s);
-
-
-
-
+        System.out.println((char)(king.y + 65) + "" + king.x);
+        System.out.println((char)(stone.y + 65) + "" + stone.x);
     }
 }
