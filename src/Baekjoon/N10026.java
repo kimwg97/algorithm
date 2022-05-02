@@ -8,6 +8,7 @@ import java.util.Scanner;
 public class N10026 {
     int n;
     char[][] map;
+    char[][] RGWMap;
 
     int[] dx = {0, 1, 0, -1};
     int[] dy = {1, 0, -1, 0};
@@ -17,22 +18,31 @@ public class N10026 {
 
         n = sc.nextInt();
         map = new char[n][n];
+        RGWMap = new char[n][n];
 
         for(int i = 0; i < n; i++){
             String x = sc.next();
             for(int j = 0; j < n; j++){
                 map[i][j] = x.charAt(j);
+                RGWMap[i][j] = x.charAt(j);
+                if(RGWMap[i][j] == 'G') RGWMap[i][j] = 'R';
             }
         }
-
         int count = 0;
         int wCount = 0;
         for(int i = 0; i < n; i++){
             for(int j = 0; j < n; j++){
                 if(map[i][j] != '.'){
-                    if(map[i][j] != 'A') wCount++;
-                    BFS(map[i][j], i, j);
+                    char color = map[i][j];
+                    map[i][j] = '.';
+                    rDFS(i, j, color);
                     count++;
+                }
+                if(RGWMap[i][j] != '.'){
+                    char color = RGWMap[i][j];
+                    RGWMap[i][j] = '.';
+                    wDFS(i, j, color);
+                    wCount++;
                 }
             }
         }
@@ -40,33 +50,25 @@ public class N10026 {
         System.out.println(count + " " + wCount);
     }
 
-    public void BFS(char color, int x, int y){
-        Queue<Point> q = new LinkedList<>();
-        q.add(new Point(x, y));
-
-        map[x][y] = '.';
-
-        while (!q.isEmpty()){
-            Point temp = q.poll();
-
-            for(int i = 0; i < 4; i++){
-                int nx = temp.x + dx[i];
-                int ny = temp.y + dy[i];
-                if(nx >= 0 && ny >= 0 && nx < n && ny < n){
-                    if(map[nx][ny] == color){
-                        map[nx][ny] = '.';
-                        q.add(new Point(nx, ny));
-                    }
-                    else if(color == 'R' || color == 'G'){
-                        if(map[nx][ny] == 'R' || map[nx][ny] == 'G'){
-                            map[nx][ny] = 'A';
-                            q.add(new Point(nx, ny));
-                        }
-                    }
-
-                }
+    public void rDFS(int x, int y, char color){
+        for(int i = 0; i < 4; i++){
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            if(nx >= 0 && ny >= 0 && nx < n && ny < n && map[nx][ny] == color){
+                map[nx][ny] = '.';
+                rDFS(nx, ny, color);
             }
         }
+    }
 
+    public void wDFS(int x, int y, char color){
+        for(int i = 0; i < 4; i++){
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            if(nx >= 0 && ny >= 0 && nx < n && ny < n && RGWMap[nx][ny] == color){
+                RGWMap[nx][ny] = '.';
+                wDFS(nx, ny, color);
+            }
+        }
     }
 }
