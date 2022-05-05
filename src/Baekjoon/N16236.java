@@ -22,9 +22,11 @@ public class N16236 {
     }
 
     int n;
+    int dist;
     int[][] map;
     int[][] feedMap;
     Shark shark;
+    Point minDist;
     int[] dx = {-1, 0, 1, 0};
     int[] dy = {0, -1, 0, 1};
 
@@ -33,7 +35,6 @@ public class N16236 {
         Scanner sc = new Scanner(System.in);
         n = sc.nextInt();
         map = new int[n][n];
-        feedMap = new int[n][n];
 
         for(int i = 0; i < n; i++){
             for(int j = 0; j < n; j++){
@@ -44,69 +45,80 @@ public class N16236 {
 
         int help = 0;
 
-        while (true) {
-            int move = feeding();
-            if(move == 0) break;
-            else help += move;
-            System.out.println(help);
+        while (true){
+            int hunt = BFS();
+            if(hunt == 0) break;
+            else {
+                shark.x = minDist.x;
+                shark.y = minDist.y;
+                shark.feed += 1;
+
+                if(shark.feed == shark.size){
+                    shark.feed = 0;
+                    shark.size += 1;
+                }
+
+                help += hunt;
+            }
         }
 
         System.out.println(help);
+
     }
 
-    public int feeding(){
+    public int BFS(){
         Queue<Point> q = new LinkedList<>();
         q.add(new Point(shark.x, shark.y));
-        int count = 0;
 
-        copyMap();
-        feedMap[shark.x][shark.y] = -1;
+        feedMap = new int[n][n];
+        feedMap[shark.x][shark.y] = 1;
+        map[shark.x][shark.y] = 0;
+        boolean check = false;
+
+        dist = 1000;
+        minDist = new Point(1000, 1000);
 
         while (!q.isEmpty()){
             Point temp = q.poll();
 
-            for(int i = 0; i < n; i++){
-                for(int j = 0; j < n; j++){
-                    System.out.print(feedMap[i][j]+" ");
-                }
-                System.out.println();
-            }
-            System.out.println();
-
             for(int i = 0; i < 4; i++){
                 int nx = dx[i] + temp.x;
                 int ny = dy[i] + temp.y;
-                if(nx >= 0 && ny >= 0 && nx < n && ny < n){
-                    if(feedMap[nx][ny] == 0){
-                        feedMap[nx][ny] = -1;
+                if(nx >= 0 && ny >= 0 && nx < n && ny < n && feedMap[nx][ny] == 0){
+
+                    if(map[nx][ny] == 0 || shark.size == map[nx][ny]){
+                        feedMap[nx][ny] = feedMap[temp.x][temp.y] + 1;
                         q.add(new Point(nx, ny));
                     }
-                    else if(shark.size == feedMap[nx][ny]){
-                        q.add(new Point(nx, ny));
-                    }
-                    else if(shark.size > feedMap[nx][ny] && feedMap[nx][ny] != -1){
-                        map[nx][ny] = 0;
-                        shark.feed += 1;
-                        if(shark.feed == shark.size){
-                            shark.size++;
-                            shark.feed = 0;
-                            shark.x = nx;
-                            shark.y = ny;
+                    else if(shark.size > map[nx][ny] && map[nx][ny] != 0){
+                        feedMap[nx][ny] = feedMap[temp.x][temp.y] + 1;
+                        check = true;
+
+                        if(dist > feedMap[nx][ny]){
+                            dist = feedMap[nx][ny];
+                            minDist.x = nx;
+                            minDist.y = ny;
                         }
-                        return count;
+                        else if(dist == feedMap[nx][ny]){
+                            if(minDist.x == nx){
+                                if(minDist.y > ny){
+                                    minDist.x = nx;
+                                    minDist.y = ny;
+                                }
+                            }
+                            else if(minDist.x > nx){
+                                minDist.x = nx;
+                                minDist.y = ny;
+                            }
+                        }
+                        q.add(new Point(nx, ny));
                     }
                 }
             }
         }
 
-        return 0;
+        if(check) return dist-1;
+        else return 0;
     }
 
-    public void copyMap(){
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < n; j++){
-                feedMap[i][j] = map[i][j];
-            }
-        }
-    }
 }
