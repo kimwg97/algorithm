@@ -1,13 +1,12 @@
 package Baekjoon;
 
-import java.awt.*;
 import java.util.*;
 
 public class N1260 {
 
     int n, m, v;
+    int[][] map;
     int[] check;
-    ArrayList<ArrayList<Integer>> line = new ArrayList<>();
 
     public void N1260(){
         Scanner sc = new Scanner(System.in);
@@ -15,48 +14,58 @@ public class N1260 {
         m = sc.nextInt();
         v = sc.nextInt();
 
+        map = new int[n+1][n+1];
         check = new int[n+1];
-        for(int i = 0; i < m+1; i++) line.add(new ArrayList<>());
+        check[v] = 1;
 
         for(int i = 0; i < m; i++){
             int a = sc.nextInt();
             int b = sc.nextInt();
 
-            line.get(a).add(b);
-            line.get(b).add(a);
+            map[a][b] = 1;
+            map[b][a] = 1;
         }
 
         System.out.print(v + " ");
+        DFS(v);
+
+        System.out.println();
+
+        check = new int[n+1];
+        check[v] = 1;
         BFS();
 
+
+    }
+
+    public void DFS(int now){
+        for(int i = 1; i < n+1; i++){
+            if(map[now][i] == 1 && check[i] == 0){
+                check[i] = 1;
+                System.out.print(i + " ");
+                DFS(i);
+            }
+        }
     }
 
     public void BFS(){
-        PriorityQueue<Integer> q = new PriorityQueue<>();
+        Queue<Integer> q = new LinkedList<>();
         q.add(v);
-        check[v] = 1;
 
-        while(!q.isEmpty()){
-            int len = q.size();
+        System.out.print(v + " ");
 
-            for(int i = 0; i < len; i++) {
-                int now = q.poll();
-                int nowSize = line.get(now).size();
+        while (!q.isEmpty()){
+            int now = q.poll();
 
-                for(int j = 0; j < nowSize; j++){
-                    if(check[line.get(now).get(j)] == 0) {
-                        check[line.get(now).get(j)] = 1;
-                        q.add(line.get(now).get(j));
-                    }
+            for(int i = 1; i < n+1; i++){
+                if(map[now][i] == 1 && check[i] == 0){
+                    check[i] = 1;
+                    System.out.print(i + " ");
+                    q.add(i);
                 }
             }
-
-            for(int x : q){
-                System.out.print(x + " ");
-            }
-            System.out.println();
-
-
         }
+
     }
+
 }
