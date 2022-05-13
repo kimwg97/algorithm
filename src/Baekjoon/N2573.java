@@ -1,5 +1,8 @@
 package Baekjoon;
 
+import java.awt.*;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
 
 public class N2573 {
@@ -27,11 +30,15 @@ public class N2573 {
         int c = 0;
         copy = new int[n][m];
 
-        while (c < 2){
+        while (true){
             c = 0;
-            if(melt() == 0) {
-                count = 0;
-                break;
+
+            System.out.println();
+            for(int i = 0; i < n; i++){
+                for(int j = 0; j < m; j++){
+                    System.out.print(map[i][j] + " ");
+                }
+                System.out.println();
             }
 
             copyMap();
@@ -44,6 +51,13 @@ public class N2573 {
                         c++;
                     }
                 }
+            }
+
+            if(c > 1 ) break;
+
+            if(melt() == 0) {
+                count = 0;
+                break;
             }
         }
 
@@ -60,18 +74,35 @@ public class N2573 {
 
     public int melt(){
         count++;
-        boolean check = false;
+        Queue<Point> q = new LinkedList<>();
+        boolean zero = true;
+        boolean[][] check = new boolean[n][m];
+
         for(int i = 0; i < n; i++){
             for(int j = 0; j < m; j++){
                 if(map[i][j] != 0){
-                    map[i][j]--;
-                    check = true;
+                    q.add(new Point(i, j));
+                    check[i][j] = true;
+                    zero = false;
                 }
             }
         }
 
-        if(check) return 1;
-        else return 0;
+        while (!q.isEmpty()){
+            Point temp = q.poll();
+
+            for(int i = 0; i < 4; i++) {
+                int nx = dx[i] + temp.x;
+                int ny = dy[i] + temp.y;
+
+                if (nx >= 0 && ny >= 0 && nx < n && ny < m && map[nx][ny] == 0 && check[nx][ny] == false) {
+                    if(map[temp.x][temp.y] > 0 ) map[temp.x][temp.y]--;
+                }
+            }
+        }
+
+        if(zero) return 0;
+        else return 1;
     }
 
     public void DFS(int x, int y){
